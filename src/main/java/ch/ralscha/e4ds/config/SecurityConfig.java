@@ -7,19 +7,13 @@ import org.apache.shiro.authc.credential.PasswordMatcher;
 import org.apache.shiro.spring.LifecycleBeanPostProcessor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import ch.ralscha.e4ds.repository.UserRepository;
 
 import com.google.common.collect.Maps;
 
 @Configuration
 public class SecurityConfig {
-
-	@Autowired
-	private UserRepository userRepository;
 
 	@Bean
 	public DefaultPasswordService passwordService() {
@@ -38,7 +32,7 @@ public class SecurityConfig {
 		filterChainDefs.put("/resources/**", "anon");
 		filterChainDefs.put("/extjs/**", "anon");
 		filterChainDefs.put("/ux/**", "anon");
-		filterChainDefs.put("/login.*", "anon");
+		filterChainDefs.put("/login.js", "anon");
 		filterChainDefs.put("/wro/login*", "anon");
 		filterChainDefs.put("/i18n.js", "anon");
 
@@ -61,7 +55,7 @@ public class SecurityConfig {
 
 	@Bean
 	public AppRealm appRealm() {
-		AppRealm appRealm = new AppRealm(userRepository);
+		AppRealm appRealm = new AppRealm();
 
 		PasswordMatcher credentialsMatcher = new PasswordMatcher();
 		credentialsMatcher.setPasswordService(passwordService());

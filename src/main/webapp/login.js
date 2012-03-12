@@ -4,7 +4,7 @@ Ext.onReady(function() {
 	var login = Ext.create('Ext.form.Panel', {
 		frame: true,
 		title: i18n.login_title,
-		url: 'login.html',
+		url: '',
 		width: 320,
 		iconCls: 'icon-login',
 

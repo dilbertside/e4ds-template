@@ -48,7 +48,7 @@
       <script src="extjs/locale/ext-lang-de.js?v=<spring:eval expression='@environment["extjs.version"]'/>"></script>
        -->
     <% } %>	
-	<c:if test="${not empty sessionScope.SPRING_SECURITY_LAST_EXCEPTION.message}">
+	<c:if test="${not empty requestScope.shiroLoginFailure}">
 	   <script type="text/javascript">
 	   Ext.onReady(function() {
 	     Ext.ux.window.Notification.error(i18n.error, i18n.login_failed);

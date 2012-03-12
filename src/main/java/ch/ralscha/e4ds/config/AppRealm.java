@@ -12,6 +12,8 @@ import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 
 import ch.ralscha.e4ds.entity.Role;
 import ch.ralscha.e4ds.entity.User;
@@ -21,15 +23,24 @@ public class AppRealm extends AuthorizingRealm {
 
 	private UserRepository userRepository;
 
-	public AppRealm(UserRepository userRepository) {
-		this.userRepository = userRepository;
+	@Autowired
+	private ApplicationContext context;
+
+	public AppRealm() {
 		setName("AppRealm");
+	}
+
+	public UserRepository getUserRepository() {
+		if (userRepository == null) {
+			userRepository = context.getBean(UserRepository.class);
+		}
+		return userRepository;
 	}
 
 	@Override
 	protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
 		UserPrincipal principal = (UserPrincipal) getAvailablePrincipal(principals);
-		User user = userRepository.findOne(principal.getUserId());
+		User user = getUserRepository().findOne(principal.getUserId());
 
 		SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
 		for (Role role : user.getRoles()) {
@@ -50,10 +61,10 @@ public class AppRealm extends AuthorizingRealm {
 
 		SimpleAuthenticationInfo info = null;
 
-		User user = userRepository.findByUserName(username);
+		User user = getUserRepository().findByUserName(username);
 		if (user != null) {
 			if (user.isEnabled()) {
-				info = new SimpleAuthenticationInfo(new UserPrincipal(user), user.getPasswordHash().toCharArray(),
+				info = new SimpleAuthenticationInfo(new UserPrincipal(user), user.getPasswordHash(),
 						getName());
 			} else {
 				throw new DisabledAccountException("User [" + username + "] not enabled");
