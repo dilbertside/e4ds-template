@@ -4,7 +4,7 @@ import static ch.ralscha.extdirectspring.annotation.ExtDirectMethodType.POLL;
 
 import javax.servlet.http.HttpSession;
 
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.stereotype.Service;
 
 import ch.ralscha.extdirectspring.annotation.ExtDirectMethod;
@@ -13,7 +13,7 @@ import ch.ralscha.extdirectspring.annotation.ExtDirectMethod;
 public class HeartbeatService {
 
 	@ExtDirectMethod(value = POLL, event = "heartbeat")
-	@PreAuthorize("isAuthenticated()")
+	@RequiresAuthentication
 	public void heartbeat(HttpSession session) {
 		//nothing here
 	}

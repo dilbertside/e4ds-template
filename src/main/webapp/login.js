@@ -4,7 +4,7 @@ Ext.onReady(function() {
 	var login = Ext.create('Ext.form.Panel', {
 		frame: true,
 		title: i18n.login_title,
-		url: 'j_spring_security_check',
+		url: 'login.html',
 		width: 320,
 		iconCls: 'icon-login',
 
@@ -22,7 +22,7 @@ Ext.onReady(function() {
 
 		items: [ {
 			fieldLabel: i18n.user_username,
-			name: 'j_username',
+			name: 'username',
 			allowBlank: false,
 			listeners: {
 				specialkey: function(field, e) {
@@ -33,7 +33,7 @@ Ext.onReady(function() {
 			}
 		}, {
 			fieldLabel: i18n.user_password,
-			name: 'j_password',
+			name: 'password',
 			inputType: 'password',
 			allowBlank: false,
 			listeners: {
@@ -45,7 +45,7 @@ Ext.onReady(function() {
 			}
 		}, {
 			fieldLabel: i18n.login_rememberme,
-			name: '_spring_security_remember_me',
+			name: 'rememberMe',
 			xtype: 'checkbox'
 		} ],
 
@@ -54,8 +54,8 @@ Ext.onReady(function() {
 			handler: function() {
 				var form = this.up('form').getForm();
 				form.setValues({
-					j_username: 'user',
-					j_password: 'user'
+					username: 'user',
+					password: 'user'
 				});
 				form.submit();
 			}
@@ -64,8 +64,8 @@ Ext.onReady(function() {
 			handler: function() {
 				var form = this.up('form').getForm();
 				form.setValues({
-					j_username: 'admin',
-					j_password: 'admin'
+					username: 'admin',
+					password: 'admin'
 				});
 				form.submit();
 			}
@@ -113,6 +113,6 @@ Ext.onReady(function() {
 	}
 
 	// login.show();
-	login.getForm().findField('j_username').focus();
+	login.getForm().findField('username').focus();
 
 });

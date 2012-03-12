@@ -21,10 +21,10 @@ import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.joda.time.format.ISODateTimeFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -48,7 +48,7 @@ public class LoggingEventExport {
 
 	@Transactional(readOnly = true)
 	@RequestMapping(value = "/loggingEventExport.xls", method = RequestMethod.GET)
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@RequiresRoles("ROLE_ADMIN")
 	public void loggingEventExport(HttpServletRequest request, HttpServletResponse response, Locale locale,
 			@RequestParam(required = false) String level) throws Exception {
 

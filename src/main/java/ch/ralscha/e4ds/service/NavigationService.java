@@ -7,6 +7,8 @@ import java.util.Locale;
 import java.util.Set;
 
 import org.apache.commons.lang3.mutable.MutableInt;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -14,11 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import ch.ralscha.e4ds.config.UserPrincipal;
 import ch.ralscha.extdirectspring.annotation.ExtDirectMethod;
 
 import com.google.common.collect.Sets;
@@ -38,12 +38,12 @@ public class NavigationService {
 	}
 
 	@ExtDirectMethod(TREE_LOAD)
-	@PreAuthorize("isAuthenticated()")
+	@RequiresAuthentication
 	public MenuNode getNavigation(Locale locale) {
 
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		UserPrincipal principal = (UserPrincipal) SecurityUtils.getSubject().getPrincipal();
 
-		MenuNode copyOfRoot = new MenuNode(root, authentication.getAuthorities());
+		MenuNode copyOfRoot = new MenuNode(root, principal.getRoles());
 		upateIdAndLeaf(new MutableInt(0), copyOfRoot, locale);
 
 		return copyOfRoot;

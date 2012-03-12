@@ -12,7 +12,6 @@
 
 	<properties>
 		<spring.version>3.1.1.RELEASE</spring.version>
-		<spring.security.version>3.1.0.RELEASE</spring.security.version>
 
 		<hibernate.version>4.1.1.Final</hibernate.version>
 		<querydsl.version>2.3.2</querydsl.version>
@@ -81,23 +80,19 @@
 			<version>2.2.2</version>
 		</dependency>
 
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-web</artifactId>
-			<version>${spring.security.version}</version>
-		</dependency>
 
 		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-core</artifactId>
-			<version>${spring.security.version}</version>
+			<groupId>org.apache.shiro</groupId>
+			<artifactId>shiro-web</artifactId>
+			<version>1.2.0</version>
 		</dependency>
-
+		
 		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-config</artifactId>
-			<version>${spring.security.version}</version>
-		</dependency>
+			<groupId>org.apache.shiro</groupId>
+			<artifactId>shiro-spring</artifactId>
+			<version>1.2.0</version>
+		</dependency>		
+
 
 		<dependency>
 			<groupId>org.hibernate</groupId>
@@ -145,7 +140,7 @@
 				<exclusion>
 					<artifactId>jsr305</artifactId>
 					<groupId>net.sourceforge.findbugs</groupId>
-				</exclusion>				
+				</exclusion>
 			</exclusions>
 		</dependency>
 
@@ -223,13 +218,7 @@
 			<version>0.7.1.RELEASE</version>
 		</dependency>
 
-        <!-- 
-		<dependency>
-			<groupId>resources</groupId>
-			<artifactId>extjs</artifactId>
-			<version>${extjs.version}</version>
-		</dependency>
-         -->
+		<!-- <dependency> <groupId>resources</groupId> <artifactId>extjs</artifactId> <version>${extjs.version}</version> </dependency> -->
 
 		<dependency>
 			<groupId>ro.isdc.wro4j</groupId>
@@ -307,17 +296,9 @@
 		</dependency>
 
 	</dependencies>
-	
-	<!-- 
-	<repositories>
-		<repository>
-			<id>ralscha</id>
-			<name>My Private Repository</name>
-			<url>http://ralscha.ch/repository</url>
-		</repository>
-	</repositories>
- 	-->
- 	
+
+	<!-- <repositories> <repository> <id>ralscha</id> <name>My Private Repository</name> <url>http://ralscha.ch/repository</url> </repository> </repositories> -->
+
 	<build>
 		<resources>
 
@@ -358,14 +339,14 @@
 						</systemProperty>
 					</systemProperties>
 				</configuration>
-				
+
 				<dependencies>
 					<dependency>
 						<groupId>com.h2database</groupId>
 						<artifactId>h2</artifactId>
 						<version>1.3.164</version>
 					</dependency>
-				</dependencies>				
+				</dependencies>
 			</plugin>
 
 			<plugin>

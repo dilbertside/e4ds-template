@@ -12,13 +12,14 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.credential.PasswordService;
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -28,7 +29,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import ch.ralscha.e4ds.config.JpaUserDetails;
+import ch.ralscha.e4ds.config.UserPrincipal;
 import ch.ralscha.e4ds.entity.QUser;
 import ch.ralscha.e4ds.entity.Role;
 import ch.ralscha.e4ds.entity.User;
@@ -61,13 +62,13 @@ public class UserService {
 	private UserCustomRepository userCustomRepository;
 
 	@Autowired
-	private PasswordEncoder passwordEncoder;
+	private PasswordService passwordService;
 
 	@Autowired
 	private MessageSource messageSource;
 
 	@ExtDirectMethod(STORE_READ)
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@RequiresRoles("ROLE_ADMIN")
 	public ExtDirectStoreResponse<User> load(ExtDirectStoreReadRequest request) {
 
 		String filterValue = null;
@@ -81,13 +82,13 @@ public class UserService {
 	}
 
 	@ExtDirectMethod(STORE_READ)
-	@PreAuthorize("isAuthenticated()")
+	@RequiresAuthentication
 	public List<Role> loadAllRoles() {
 		return roleRepository.findAll();
 	}
 
 	@ExtDirectMethod(STORE_MODIFY)
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@RequiresRoles("ROLE_ADMIN")
 	public void destroy(List<User> destroyUsers) {
 		for (User user : destroyUsers) {
 			userRepository.delete(user);
@@ -98,7 +99,7 @@ public class UserService {
 	@ResponseBody
 	@RequestMapping(value = "/userFormPost", method = RequestMethod.POST)
 	@Transactional
-	@PreAuthorize("isAuthenticated()")
+	@RequiresAuthentication
 	public ExtDirectResponse userFormPost(HttpServletRequest request, Locale locale,
 			@RequestParam(required = false, defaultValue = "false") boolean options,
 			@RequestParam(required = false) String roleIds, @RequestParam(value = "id", required = false) Long userId,
@@ -120,10 +121,8 @@ public class UserService {
 			if (userId != null && !options) {
 				bb.and(QUser.user.id.ne(userId));
 			} else if (options) {
-				Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-				if (principal instanceof JpaUserDetails) {
-					bb.and(QUser.user.userName.ne(((JpaUserDetails) principal).getUsername()));
-				}
+				UserPrincipal principal = (UserPrincipal) SecurityUtils.getSubject().getPrincipal();
+				bb.and(QUser.user.id.ne(principal.getUserId()));
 			}
 
 			if (userRepository.count(bb) > 0) {
@@ -134,7 +133,7 @@ public class UserService {
 		if (!result.hasErrors()) {
 
 			if (StringUtils.hasText(modifiedUser.getPasswordHash())) {
-				modifiedUser.setPasswordHash(passwordEncoder.encode(modifiedUser.getPasswordHash()));
+				modifiedUser.setPasswordHash(passwordService.encryptPassword(modifiedUser.getPasswordHash()));
 			}
 
 			if (!options) {
@@ -159,13 +158,12 @@ public class UserService {
 					userRepository.save(modifiedUser);
 				}
 			} else {
-				Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-				if (principal instanceof JpaUserDetails) {
-					User dbUser = userRepository.findByUserName(((JpaUserDetails) principal).getUsername());
-					if (dbUser != null) {
-						dbUser.update(modifiedUser, true);
-					}
+				UserPrincipal principal = (UserPrincipal) SecurityUtils.getSubject().getPrincipal();
+				User dbUser = userRepository.findOne(principal.getUserId());
+				if (dbUser != null) {
+					dbUser.update(modifiedUser, true);
 				}
+
 			}
 		}
 
@@ -176,13 +174,11 @@ public class UserService {
 	}
 
 	@ExtDirectMethod
-	@PreAuthorize("isAuthenticated()")
+	@RequiresAuthentication
 	@Transactional(readOnly = true)
 	public User getLoggedOnUserObject() {
-		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		if (principal instanceof JpaUserDetails) {
-			return userRepository.findByUserName(((JpaUserDetails) principal).getUsername());
-		}
-		return null;
+		UserPrincipal principal = (UserPrincipal) SecurityUtils.getSubject().getPrincipal();
+		return userRepository.findOne(principal.getUserId());
+
 	}
 }

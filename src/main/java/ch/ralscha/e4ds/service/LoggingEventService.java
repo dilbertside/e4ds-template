@@ -4,12 +4,12 @@ import static ch.ralscha.extdirectspring.annotation.ExtDirectMethodType.STORE_RE
 
 import java.util.List;
 
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -39,7 +39,7 @@ public class LoggingEventService {
 
 	@ExtDirectMethod(STORE_READ)
 	@Transactional(readOnly = true)
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@RequiresRoles("ROLE_ADMIN")
 	public ExtDirectStoreResponse<LoggingEventDto> load(ExtDirectStoreReadRequest request) {
 
 		Pageable pageRequest = Util.createPageRequest(request, mapGuiColumn2DbField);
@@ -63,7 +63,7 @@ public class LoggingEventService {
 
 	@ExtDirectMethod
 	@Transactional
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@RequiresRoles("ROLE_ADMIN")
 	public void deleteAll(String level) {
 		if (StringUtils.hasText(level)) {
 			loggingEventRepository.delete(loggingEventRepository.findByLevelString(level));
@@ -73,7 +73,7 @@ public class LoggingEventService {
 	}
 
 	@ExtDirectMethod
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@RequiresRoles("ROLE_ADMIN")
 	public void addTestData() {
 		Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -84,7 +84,7 @@ public class LoggingEventService {
 	}
 
 	@ExtDirectMethod
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@RequiresRoles("ROLE_ADMIN")
 	public void changeLogLevel(String levelString) {
 		LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
 		ch.qos.logback.classic.Logger logger = lc.getLogger("ch.ralscha.e4ds");
@@ -95,7 +95,7 @@ public class LoggingEventService {
 	}
 
 	@ExtDirectMethod
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@RequiresRoles("ROLE_ADMIN")
 	public String getCurrentLevel() {
 		LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
 		ch.qos.logback.classic.Logger logger = lc.getLogger("ch.ralscha.e4ds");

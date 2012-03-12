@@ -1,10 +1,7 @@
 package ch.ralscha.e4ds.service;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-
-import org.springframework.security.core.GrantedAuthority;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -25,26 +22,26 @@ public class MenuNode {
 		//default constructor
 	}
 
-	public MenuNode(MenuNode source, Collection<? extends GrantedAuthority> authorities) {
+	public MenuNode(MenuNode source, Set<String> roles) {
 		this.text = source.getText();
 		this.view = source.getView();
 		this.expanded = source.isExpanded();
 		this.iconCls = source.getIconCls();
 
 		for (MenuNode sourceChild : source.getChildren()) {
-			if (hasRole(sourceChild, authorities)) {
-				children.add(new MenuNode(sourceChild, authorities));
+			if (hasRole(sourceChild, roles)) {
+				children.add(new MenuNode(sourceChild, roles));
 			}
 		}
 	}
 
-	private boolean hasRole(MenuNode child, Collection<? extends GrantedAuthority> authorities) {
+	private boolean hasRole(MenuNode child, Set<String> rs) {
 		if (child.getRoles().isEmpty()) {
 			return true;
 		}
 
-		for (GrantedAuthority grantedAuthority : authorities) {
-			if (child.getRoles().contains(grantedAuthority.getAuthority())) {
+		for (String role : rs) {
+			if (child.getRoles().contains(role)) {
 				return true;
 			}
 		}

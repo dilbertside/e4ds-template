@@ -1,23 +1,20 @@
 package ch.ralscha.e4ds.service;
 
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.stereotype.Service;
 
-import ch.ralscha.e4ds.config.JpaUserDetails;
+import ch.ralscha.e4ds.config.UserPrincipal;
 import ch.ralscha.extdirectspring.annotation.ExtDirectMethod;
 
 @Service
 public class SecurityService {
 
 	@ExtDirectMethod
-	@PreAuthorize("isAuthenticated()")
+	@RequiresAuthentication
 	public String getLoggedOnUser() {
-		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		if (principal instanceof JpaUserDetails) {
-			return ((JpaUserDetails) principal).getFullName();
-		}
-		return principal.toString();
+		UserPrincipal principal = (UserPrincipal) SecurityUtils.getSubject().getPrincipal();
+		return principal.getFullName();
 	}
 
 }

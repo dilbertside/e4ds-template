@@ -9,9 +9,10 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
+import org.apache.shiro.SecurityUtils;
 import org.slf4j.MDC;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+
+import ch.ralscha.e4ds.config.UserPrincipal;
 
 public class MdcFilter implements Filter {
 
@@ -29,9 +30,9 @@ public class MdcFilter implements Filter {
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
 			ServletException {
 
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		if (authentication != null) {
-			MDC.put("userName", authentication.getName());
+		UserPrincipal principal = (UserPrincipal) SecurityUtils.getSubject().getPrincipal();
+		if (principal != null) {
+			MDC.put("userName", principal.getUsername());
 		}
 
 		MDC.put("ip", request.getRemoteAddr());

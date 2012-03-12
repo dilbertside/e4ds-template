@@ -104,7 +104,7 @@
 				<constraints nullable="false"  />
 			</column>
 			
-			<column name="passwordHash" type="varchar(80)" />
+			<column name="passwordHash" type="varchar(92)" />
 			<column name="locale" type="varchar(8)" />
 			<column name="enabled" type="BOOLEAN" />
 			<column name="createDate" type="DATETIME" />

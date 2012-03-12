@@ -14,11 +14,11 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,7 +40,7 @@ public class UserExport {
 
 	@Transactional(readOnly = true)
 	@RequestMapping(value = "/usersExport.xls", method = RequestMethod.GET)
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@RequiresRoles("ROLE_ADMIN")
 	public void userExport(HttpServletRequest request, HttpServletResponse response, Locale locale,
 			@RequestParam(required = false) String filter) throws Exception {
 

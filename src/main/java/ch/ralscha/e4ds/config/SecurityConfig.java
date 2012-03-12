@@ -1,18 +1,92 @@
 package ch.ralscha.e4ds.config;
 
+import java.util.Map;
+
+import org.apache.shiro.authc.credential.DefaultPasswordService;
+import org.apache.shiro.authc.credential.PasswordMatcher;
+import org.apache.shiro.spring.LifecycleBeanPostProcessor;
+import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
+import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.ImportResource;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.crypto.password.StandardPasswordEncoder;
+
+import ch.ralscha.e4ds.repository.UserRepository;
+
+import com.google.common.collect.Maps;
 
 @Configuration
-@ImportResource("classpath:ch/ralscha/e4ds/config/security.xml")
 public class SecurityConfig {
 
+	@Autowired
+	private UserRepository userRepository;
+
 	@Bean
-	public PasswordEncoder passwordEncoder() {
-		return new StandardPasswordEncoder();
+	public DefaultPasswordService passwordService() {
+		return new DefaultPasswordService();
 	}
 
+	@Bean
+	public ShiroFilterFactoryBean shiroFilter(DefaultWebSecurityManager securityManager) {
+		ShiroFilterFactoryBean shiroFilter = new ShiroFilterFactoryBean();
+
+		shiroFilter.setSecurityManager(securityManager);
+
+		Map<String, String> filterChainDefs = Maps.newLinkedHashMap();
+
+		filterChainDefs.put("/favicon.ico", "anon");
+		filterChainDefs.put("/resources/**", "anon");
+		filterChainDefs.put("/extjs/**", "anon");
+		filterChainDefs.put("/ux/**", "anon");
+		filterChainDefs.put("/login.*", "anon");
+		filterChainDefs.put("/wro/login*", "anon");
+		filterChainDefs.put("/i18n.js", "anon");
+
+		filterChainDefs.put("/logout", "logout");
+
+		filterChainDefs.put("/**", "authc");
+
+		shiroFilter.setFilterChainDefinitionMap(filterChainDefs);
+
+		shiroFilter.setLoginUrl("/login.html");
+		shiroFilter.setSuccessUrl("/index.html");
+
+		return shiroFilter;
+	}
+
+	@Bean
+	public DefaultWebSecurityManager securityManager(AppRealm appRealm) {
+		return new DefaultWebSecurityManager(appRealm);
+	}
+
+	@Bean
+	public AppRealm appRealm() {
+		AppRealm appRealm = new AppRealm(userRepository);
+
+		PasswordMatcher credentialsMatcher = new PasswordMatcher();
+		credentialsMatcher.setPasswordService(passwordService());
+
+		appRealm.setCredentialsMatcher(credentialsMatcher);
+
+		return appRealm;
+	}
+
+	@Bean
+	public LifecycleBeanPostProcessor lifecycleBeanPostProcessor() {
+		return new LifecycleBeanPostProcessor();
+	}
+	//
+	//	//	@Bean
+	//	//	@DependsOn("lifecycleBeanPostProcessor")
+	//	//	public DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator() {
+	//	//		return new DefaultAdvisorAutoProxyCreator();
+	//	//	}
+	//
+	//	@Bean
+	//	public AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor(
+	//			DefaultWebSecurityManager securityManager) {
+	//		AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor = new AuthorizationAttributeSourceAdvisor();
+	//		authorizationAttributeSourceAdvisor.setSecurityManager(securityManager);
+	//		return authorizationAttributeSourceAdvisor;
+	//	}
 }

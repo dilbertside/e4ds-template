@@ -2,10 +2,10 @@ package ch.ralscha.e4ds.config;
 
 import java.util.Date;
 
+import org.apache.shiro.authc.credential.PasswordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,7 +26,7 @@ public class Startup implements ApplicationListener<ContextRefreshedEvent> {
 	private RoleRepository roleRepository;
 
 	@Autowired
-	private PasswordEncoder passwordEncoder;
+	private PasswordService passwordService;
 
 	@Override
 	@Transactional
@@ -38,7 +38,7 @@ public class Startup implements ApplicationListener<ContextRefreshedEvent> {
 			adminUser.setEmail("test@test.ch");
 			adminUser.setFirstName("admin");
 			adminUser.setName("admin");
-			adminUser.setPasswordHash(passwordEncoder.encode("admin"));
+			adminUser.setPasswordHash(passwordService.encryptPassword("admin"));
 			adminUser.setEnabled(true);
 			adminUser.setLocale("en");
 			adminUser.setCreateDate(new Date());
@@ -55,7 +55,7 @@ public class Startup implements ApplicationListener<ContextRefreshedEvent> {
 			normalUser.setFirstName("user");
 			normalUser.setName("user");
 
-			normalUser.setPasswordHash(passwordEncoder.encode("user"));
+			normalUser.setPasswordHash(passwordService.encryptPassword("user"));
 			normalUser.setEnabled(true);
 			normalUser.setLocale("de");
 			normalUser.setCreateDate(new Date());
