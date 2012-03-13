@@ -1,7 +1,7 @@
 Sample application with ExtJs4, ExtDirectSpring, Spring Framework 3.1, Spring Data JPA, Hibernate, Spring Security.
 
 To start the application from the command line type
-mvn jetty:run
+mvn tomat7:run
 
 Open a browser and go to 
 http://localhost:8080
@@ -19,7 +19,3 @@ System.setProperty("spring.profiles.active", "development");
 Production:
 System.setProperty("spring.profiles.active", "production");
 or delete the line. production is the default profile.
-
-
-Tomcat
-mvn -Dexec.classpathScope=compile "-Dexec.args=-classpath %classpath StartTomcat" -Dexec.executable=java process-classes org.codehaus.mojo:exec-maven-plugin:1.2:exec
