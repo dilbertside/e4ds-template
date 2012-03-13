@@ -29,9 +29,9 @@ public class MenuNode {
 		this.iconCls = source.getIconCls();
 
 		for (MenuNode sourceChild : source.getChildren()) {
-			if (hasRole(sourceChild, roles)) {
-				children.add(new MenuNode(sourceChild, roles));
-			}
+			//if (hasRole(sourceChild, roles)) {
+			children.add(new MenuNode(sourceChild, roles));
+			//}
 		}
 	}
 

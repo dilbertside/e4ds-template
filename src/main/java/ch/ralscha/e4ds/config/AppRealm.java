@@ -64,8 +64,7 @@ public class AppRealm extends AuthorizingRealm {
 		User user = getUserRepository().findByUserName(username);
 		if (user != null) {
 			if (user.isEnabled()) {
-				info = new SimpleAuthenticationInfo(new UserPrincipal(user), user.getPasswordHash(),
-						getName());
+				info = new SimpleAuthenticationInfo(new UserPrincipal(user), user.getPasswordHash(), getName());
 			} else {
 				throw new DisabledAccountException("User [" + username + "] not enabled");
 			}

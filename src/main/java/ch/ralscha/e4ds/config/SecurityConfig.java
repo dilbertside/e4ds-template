@@ -5,6 +5,7 @@ import java.util.Map;
 import org.apache.shiro.authc.credential.DefaultPasswordService;
 import org.apache.shiro.authc.credential.PasswordMatcher;
 import org.apache.shiro.spring.LifecycleBeanPostProcessor;
+import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.springframework.context.annotation.Bean;
@@ -21,10 +22,10 @@ public class SecurityConfig {
 	}
 
 	@Bean
-	public ShiroFilterFactoryBean shiroFilter(DefaultWebSecurityManager securityManager) {
+	public ShiroFilterFactoryBean shiroFilter() {
 		ShiroFilterFactoryBean shiroFilter = new ShiroFilterFactoryBean();
 
-		shiroFilter.setSecurityManager(securityManager);
+		shiroFilter.setSecurityManager(securityManager());
 
 		Map<String, String> filterChainDefs = Maps.newLinkedHashMap();
 
@@ -49,8 +50,8 @@ public class SecurityConfig {
 	}
 
 	@Bean
-	public DefaultWebSecurityManager securityManager(AppRealm appRealm) {
-		return new DefaultWebSecurityManager(appRealm);
+	public DefaultWebSecurityManager securityManager() {
+		return new DefaultWebSecurityManager(appRealm());
 	}
 
 	@Bean
@@ -69,18 +70,17 @@ public class SecurityConfig {
 	public LifecycleBeanPostProcessor lifecycleBeanPostProcessor() {
 		return new LifecycleBeanPostProcessor();
 	}
-	//
-	//	//	@Bean
-	//	//	@DependsOn("lifecycleBeanPostProcessor")
-	//	//	public DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator() {
-	//	//		return new DefaultAdvisorAutoProxyCreator();
-	//	//	}
-	//
+
 	//	@Bean
-	//	public AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor(
-	//			DefaultWebSecurityManager securityManager) {
-	//		AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor = new AuthorizationAttributeSourceAdvisor();
-	//		authorizationAttributeSourceAdvisor.setSecurityManager(securityManager);
-	//		return authorizationAttributeSourceAdvisor;
+	//	@DependsOn("lifecycleBeanPostProcessor")
+	//	public DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator() {
+	//		return new DefaultAdvisorAutoProxyCreator();
 	//	}
+
+	@Bean
+	public AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor() {
+		AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor = new AuthorizationAttributeSourceAdvisor();
+		authorizationAttributeSourceAdvisor.setSecurityManager(securityManager());
+		return authorizationAttributeSourceAdvisor;
+	}
 }
