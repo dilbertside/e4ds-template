@@ -30,7 +30,21 @@
 		<extjs.version>4.1.0</extjs.version>
 	</properties>
 
+	<repositories>
 
+		<repository>
+			<id>sonatype</id>
+			<name>sonatype</name>
+			<url>https://oss.sonatype.org/content/groups/public</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+		</repository>
+
+	</repositories>
 	<dependencies>
 
 		<dependency>
@@ -220,7 +234,7 @@
 		<dependency>
 			<groupId>ro.isdc.wro4j</groupId>
 			<artifactId>wro4j-core</artifactId>
-			<version>1.4.4</version>
+			<version>1.4.6</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>log4j</artifactId>
@@ -265,7 +279,7 @@
 		<dependency>
 			<groupId>ch.ralscha</groupId>
 			<artifactId>embeddedtc</artifactId>
-			<version>0.0.8</version>
+			<version>0.0.9-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 
@@ -326,7 +340,7 @@
 				<artifactId>tomcat7-maven-plugin</artifactId>
 				<version>2.0-beta-1</version>
 				<configuration>
-					<path>/</path>
+					<path>/e4</path>
 					<contextFile>${basedir}/src/main/config/tomcat.xml</contextFile>
 				</configuration>
 
