@@ -18,7 +18,7 @@
    <logger name="ch.rasc.e4ds" level="DEBUG" />
    
    <!-- 3rdparty Loggers -->
-   <logger name="org.springframework.web" level="DEBUG" />
+   <logger name="org.springframework.web" level="WARN" />
    
   <root level="WARN">    
     <appender-ref ref="CONSOLE" />

@@ -27,6 +27,7 @@ import ch.rasc.e4ds.util.Util;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
+import com.google.common.eventbus.Subscribe;
 
 @Service
 public class LoggingEventService {
@@ -102,4 +103,10 @@ public class LoggingEventService {
 		return logger != null && logger.getLevel() != null ? logger.getLevel().toString() : "ERROR";
 	}
 
+	
+	@Subscribe
+	public void onLogEventSubscription(String p) {
+		Logger logger = LoggerFactory.getLogger(getClass());
+		logger.info(p);
+	}
 }
