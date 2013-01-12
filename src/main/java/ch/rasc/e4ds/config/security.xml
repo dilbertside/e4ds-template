@@ -4,28 +4,49 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.1.xsd
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd">
 
-    <http pattern="/favicon.ico" security="none" />
-    <http pattern="/resources/**" security="none" />
-    <http pattern="/extjs/**" security="none" />
-    <http pattern="/ux/**" security="none" />    
-    
-	<http use-expressions="true">
-		<intercept-url pattern="/login.*" access="permitAll()" />
-		<intercept-url pattern="/wro/login*" access="permitAll()" />
-		<intercept-url pattern="/i18n*" access="permitAll()" />
+    <beans:beans profile="!development">
+	    <http pattern="/favicon.ico" security="none" />
+	    <http pattern="/resources/**" security="none" />
+	    <http pattern="/extjs/**" security="none" />
+	    <http pattern="/ux/**" security="none" />
+	    
+		<http use-expressions="true">
+			<intercept-url pattern="/login.*" access="permitAll()" />
+			<intercept-url pattern="/wro/login*" access="permitAll()" />
+			<intercept-url pattern="/i18n*" access="permitAll()" />
+		
+			<intercept-url pattern="/**" access="isAuthenticated()" />
+			<form-login default-target-url="/index.html" always-use-default-target="true" login-page="/login.html"/>
+			<logout delete-cookies="JSESSIONID"/>
+			<remember-me key="e4ds-template"/>
+		</http>
+	 
+		<authentication-manager>
+			<authentication-provider user-service-ref="jpaUserDetailsService">
+				<password-encoder ref="passwordEncoder" />
+			</authentication-provider>
+		</authentication-manager>
 	
-		<intercept-url pattern="/**" access="isAuthenticated()" />
-		<form-login default-target-url="/index.html" always-use-default-target="true" login-page="/login.html"/>
-		<logout delete-cookies="JSESSIONID"/>
-		<remember-me key="e4ds-template"/>
-	</http>
- 
-	<authentication-manager>
-		<authentication-provider user-service-ref="jpaUserDetailsService">
-			<password-encoder ref="passwordEncoder" />
-		</authentication-provider>
-	</authentication-manager>
-
-	<global-method-security secured-annotations="enabled"  pre-post-annotations="enabled"/>
+		<global-method-security secured-annotations="enabled"  pre-post-annotations="enabled"/>
+    </beans:beans>
+    
+    <beans:beans profile="development">
+      <http use-expressions="false" auto-config="true" disable-url-rewriting="true" create-session="always">
+	      <intercept-url pattern="/**" access="ROLE_ADMIN" />
+	      <anonymous granted-authority="ROLE_ADMIN" enabled="true" />
+	      <request-cache ref="requestCache" />
+	   </http>
+	   <global-method-security secured-annotations="disabled" pre-post-annotations="disabled" />
+	   <beans:bean id="requestCache" class="org.springframework.security.web.savedrequest.NullRequestCache"/>
+	   <authentication-manager alias="authenticationManager" >
+	      <authentication-provider>
+	         <user-service>
+	            <user name="admin" password="admin" authorities="ROLE_USER, ROLE_ADMIN" />
+	            <user name="user" password="user" authorities="ROLE_USER" />
+	         </user-service>
+	         <password-encoder hash="sha"/>
+	      </authentication-provider>
+	   </authentication-manager>
+    </beans:beans>
 
 </beans:beans>

@@ -15,7 +15,7 @@
 
 	<context-param>
 		<param-name>spring.profiles.default</param-name>
-		<param-value>production</param-value>
+		<param-value>development</param-value>
 	</context-param>
 
 	<listener>
@@ -109,5 +109,9 @@
 	<session-config>
 		<session-timeout>10</session-timeout>
 	</session-config>
+	
+	<error-page>
+      <location>/error-catchall</location> 
+   </error-page>
 
 </web-app>

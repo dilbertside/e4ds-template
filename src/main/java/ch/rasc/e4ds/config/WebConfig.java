@@ -1,21 +1,27 @@
 package ch.rasc.e4ds.config;
 
+import java.util.List;
 import java.util.Locale;
+import java.util.Properties;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.core.Ordered;
 import org.springframework.core.env.Environment;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 import ch.rasc.e4ds.web.AppLocaleResolver;
@@ -39,6 +45,8 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 		registry.addViewController("/").setViewName("index");
 		registry.addViewController("/index.html").setViewName("index");
 		registry.addViewController("/login.html").setViewName("login");
+		if(environment.acceptsProfiles("development"))
+			registry.addViewController("/error.html").setViewName("error");
 	}
 
 	@Bean
@@ -82,5 +90,24 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 	public MultipartResolver multipartResolver() {
 		return new CommonsMultipartResolver();
 	}
-
+	
+	/**
+	 * remove this bean if you do not want exceptions mapped to view
+	 * 
+	 * @return {@link SimpleMappingExceptionResolver} 
+	 */
+	@Bean 
+	public SimpleMappingExceptionResolver simpleMappingExceptionResolver() {
+		SimpleMappingExceptionResolver resolver =  new SimpleMappingExceptionResolver();
+		//we want to override default exception handler from spring or even our @ControllerAdvice 
+		//in case we want to return a view and not some json
+		resolver.setOrder(Ordered.HIGHEST_PRECEDENCE);
+		Properties mappings = new Properties();
+		mappings.put("AuthenticationCredentialsNotFoundException", "login");
+		mappings.put("HttpMediaTypeNotAcceptableException", "index");
+		resolver.setExceptionMappings(mappings);
+		//do not set DefaultErrorView or our ErrorConfig is useless
+		//resolver.setDefaultErrorView("uncaughtException");
+		return resolver;
+	}
 }

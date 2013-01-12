@@ -14,7 +14,13 @@
     </connectionSource>
   </appender>
 
-  <root level="INFO">    
+   <!-- Application Loggers -->
+   <logger name="ch.rasc.e4ds" level="DEBUG" />
+   
+   <!-- 3rdparty Loggers -->
+   <logger name="org.springframework.web" level="DEBUG" />
+   
+  <root level="WARN">    
     <appender-ref ref="CONSOLE" />
     <appender-ref ref="DB" />
   </root>  

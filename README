@@ -1,4 +1,19 @@
-Sample application with ExtJs4, ExtDirectSpring, Spring Framework 3.1, Spring Data JPA, Hibernate, Spring Security.
+Tentative to build on top of e4ds-template a better error handling 
+with some of the new Spring 3.2 features http://static.springsource.org/spring/docs/3.2.x/spring-framework-reference/htmlsingle/#new-in-3.2
+
+It is a tentative to address open issue https://code.google.com/p/extdirectspring/issues/detail?id=23
+Form post hands off to spring so any exceptions aren't handled correctly by the front-end.
+
+Main additions are an ErrorController and an ErrorConfig to add some meat to default Spring handlers and make them compatible to Ext Direct 
+
+by launching http://localhost:8080/error.html
+some errors are handled.
+
+Some more use cases are required to catch some tricky errors which occur beyond the scope of EDS router.
+
+below the original project description
+-----------------------------------------
+Sample application with ExtJs4, ExtDirectSpring, Spring Framework 3.2, Spring Data JPA, Hibernate, Spring Security.
 See the application in action: http://e4ds.rasc.ch
 
 To start the application from the command line type
