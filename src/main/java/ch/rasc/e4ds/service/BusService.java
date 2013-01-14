@@ -24,14 +24,14 @@ import com.google.common.eventbus.Subscribe;
  *
  */
 @Service
-public class BusService implements InitializingBean, ApplicationListener<ContextRefreshedEvent>{
+public class BusService implements InitializingBean/*, ApplicationListener<ContextRefreshedEvent>*/{
 	
 	private final static Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 	@Autowired private LoggingEventRepository loggingEventRepository;
 	@Autowired private EventBus eventBus;
 	@Autowired private MethodRegistrar methodRegistrar;
 	//to prevent to run twice scheduler as we receive twice ContextRefreshedEvent
-	private boolean initialized = false;
+	//private boolean initialized = false;
 
 	/*
 	 * (non-Javadoc)
@@ -40,25 +40,26 @@ public class BusService implements InitializingBean, ApplicationListener<Context
 	 */
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		eventBus.register(this);
 		logger.debug("BusService::afterPropertiesSet");
+		eventBus.register(this);
+		eventBus.register(LoggingEventService.class);
 	}
 
-	@Override @Transactional
+	/*@Override @Transactional
 	public void onApplicationEvent(ContextRefreshedEvent event) {
 		logger.debug("BusService::onApplicationEvent "+ event.getApplicationContext().getDisplayName());
 		
-		if (null != event.getApplicationContext().getParent() && !initialized) {//not yet initialized, wait for the second pass
+		//if (null != event.getApplicationContext().getParent() && !initialized) {//not yet initialized, wait for the second pass
 			//if(env.equalsIgnoreCase("dev"))
 			eventBus.register(LoggingEventService.class);
-			initialized = true;
+			//initialized = true;
 			initAtLast();
 			//we rescan and register the API methods
 			//methodRegistrar.onApplicationEvent(new ContextRefreshedEvent(event.getApplicationContext()));
 			//ContextRefreshedEvent event2 = new ContextRefreshedEvent(event.getApplicationContext()) ;
 			//event.getApplicationContext().publishEvent(event2);
-		}
-	}
+		//}
+	}*/
 	
 	/**
 	 * this method will broadcast something to all subscribers of Poll event

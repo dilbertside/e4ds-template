@@ -5,6 +5,7 @@ import java.util.Date;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.core.Ordered;
 import org.springframework.security.authentication.encoding.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,7 +18,7 @@ import ch.rasc.e4ds.repository.UserRepository;
 import com.google.common.collect.Sets;
 
 @Component
-public class Startup implements ApplicationListener<ContextRefreshedEvent> {
+public class Startup implements ApplicationListener<ContextRefreshedEvent>, Ordered{
 
 	@Autowired
 	private UserRepository userRepository;
@@ -65,6 +66,11 @@ public class Startup implements ApplicationListener<ContextRefreshedEvent> {
 
 			userRepository.save(normalUser);
 		}
+	}
+
+	@Override
+	public int getOrder() {
+		return Ordered.HIGHEST_PRECEDENCE;
 	}
 
 }
