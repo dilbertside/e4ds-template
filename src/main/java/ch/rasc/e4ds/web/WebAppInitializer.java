@@ -66,7 +66,7 @@ public class WebAppInitializer implements WebApplicationInitializer {
 
 		container.addFilter("springSecurityFilterChain",
 				new DelegatingFilterProxy("springSecurityFilterChain", rootContext)).addMappingForUrlPatterns(
-				EnumSet.of(DispatcherType.REQUEST, DispatcherType.FORWARD), true, "/*");
+				EnumSet.of(DispatcherType.REQUEST, DispatcherType.FORWARD, DispatcherType.ASYNC), true, "/*");
 
 		container.addFilter("mdcFilter", MdcFilter.class).addMappingForUrlPatterns(
 				EnumSet.of(DispatcherType.REQUEST, DispatcherType.FORWARD), true, "/*");
@@ -75,6 +75,7 @@ public class WebAppInitializer implements WebApplicationInitializer {
 				new GenericWebApplicationContext()));
 		dispatcher.setLoadOnStartup(1);
 		dispatcher.addMapping("/");
+		dispatcher.setAsyncSupported(true);
 
 		try {
 			processWebResources(container, rootContext.getEnvironment().acceptsProfiles("production"));

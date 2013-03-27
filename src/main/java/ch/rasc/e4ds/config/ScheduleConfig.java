@@ -20,6 +20,8 @@ public class ScheduleConfig {
 	    factory.setCorePoolSize(50);
 	    factory.setMaxPoolSize(200);
 	    factory.setQueueCapacity(5000);
+	    factory.setThreadGroupName("EDS");
+	    factory.setThreadNamePrefix("eds-");
 	    return factory;
 	}
 	
