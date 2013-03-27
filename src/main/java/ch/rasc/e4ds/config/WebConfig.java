@@ -10,6 +10,7 @@ import org.springframework.context.support.ReloadableResourceBundleMessageSource
 import org.springframework.core.env.Environment;
 import org.springframework.scheduling.concurrent.ThreadPoolExecutorFactoryBean;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.LocaleResolver;
@@ -62,6 +63,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 	@Autowired ThreadPoolExecutorFactoryBean threadPoolExecutorFactoryBean;
 	@Bean
 	public ch.ralscha.extdirectspring.controller.Configuration configuration() throws Exception {
+		SecurityContextHolder.setStrategyName("MODE_INHERITABLETHREADLOCAL");
 		ch.ralscha.extdirectspring.controller.Configuration config = new ch.ralscha.extdirectspring.controller.Configuration();
 		config.setSendStacktrace(environment.acceptsProfiles("development"));
 		config.setExceptionToMessage(new ImmutableMap.Builder<Class<?>, String>().put(AccessDeniedException.class,
