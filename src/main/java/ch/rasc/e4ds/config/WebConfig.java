@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.core.env.Environment;
+import org.springframework.scheduling.concurrent.ThreadPoolExecutorFactoryBean;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
@@ -19,6 +20,7 @@ import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
+import ch.ralscha.extdirectspring.controller.BatchedMethodsExecutionPolicy;
 import ch.ralscha.extdirectspring.util.JsonHandler;
 import ch.rasc.e4ds.web.AppLocaleResolver;
 
@@ -57,13 +59,15 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 		resolver.setSuffix(".jsp");
 		return resolver;
 	}
-
+	@Autowired ThreadPoolExecutorFactoryBean threadPoolExecutorFactoryBean;
 	@Bean
-	public ch.ralscha.extdirectspring.controller.Configuration configuration() {
+	public ch.ralscha.extdirectspring.controller.Configuration configuration() throws Exception {
 		ch.ralscha.extdirectspring.controller.Configuration config = new ch.ralscha.extdirectspring.controller.Configuration();
 		config.setSendStacktrace(environment.acceptsProfiles("development"));
 		config.setExceptionToMessage(new ImmutableMap.Builder<Class<?>, String>().put(AccessDeniedException.class,
 				"accessdenied").build());
+		config.setBatchedMethodsExecutionPolicy(BatchedMethodsExecutionPolicy.CONCURRENT);
+	    config.setBatchedMethodsExecutorService(threadPoolExecutorFactoryBean.getObject());
 		return config;
 	}
 
