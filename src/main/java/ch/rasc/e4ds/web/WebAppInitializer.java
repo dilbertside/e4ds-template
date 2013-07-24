@@ -71,12 +71,13 @@ public class WebAppInitializer implements WebApplicationInitializer {
 		container.addFilter("mdcFilter", MdcFilter.class).addMappingForUrlPatterns(
 				EnumSet.of(DispatcherType.REQUEST, DispatcherType.FORWARD), true, "/*");
 
-		ServletRegistration.Dynamic dispatcher = container.addServlet("dispatcher", new DispatcherServlet(
-				new GenericWebApplicationContext()));
+		DispatcherServlet servlet = new DispatcherServlet(new GenericWebApplicationContext());
+		servlet.setThreadContextInheritable(true);
+
+		ServletRegistration.Dynamic dispatcher = container.addServlet("dispatcher", servlet);
 		dispatcher.setLoadOnStartup(1);
 		dispatcher.addMapping("/");
 		dispatcher.setAsyncSupported(true);
-		dispatcher.setInitParameter("threadContextInheritable", Boolean.TRUE.toString());
 
 		try {
 			processWebResources(container, rootContext.getEnvironment().acceptsProfiles("production"));
