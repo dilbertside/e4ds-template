@@ -17,6 +17,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import ch.ralscha.extdirectspring.annotation.ExtDirectMethod;
+import ch.rasc.e4ds.web.UserPreferences;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -28,6 +29,7 @@ public class NavigationService {
 
 	@Autowired
 	private MessageSource messageSource;
+	@Autowired private UserPreferences userPreferences;
 
 	private final MenuNode root;
 
@@ -40,7 +42,7 @@ public class NavigationService {
 	@ExtDirectMethod(TREE_LOAD)
 	@PreAuthorize("isAuthenticated()")
 	public MenuNode getNavigation(Locale locale) {
-
+		System.out.println("my wonderful color: " + userPreferences.getMyColorButton());
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
 		MenuNode copyOfRoot = new MenuNode(root, authentication.getAuthorities());
