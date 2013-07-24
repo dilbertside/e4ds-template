@@ -7,6 +7,8 @@ import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.WebApplicationContext;
 
+import ch.rasc.e4ds.dto.Color;
+
 
 
 @Component
@@ -18,28 +20,29 @@ public class UserPreferences implements Serializable {
 	 */
 	private static final long serialVersionUID = 2569586198993319961L;
 
-	String myColorButton = "#0000";
+	Color color;
 	
 	public UserPreferences(){
 		
 	}
 
-	public UserPreferences(String myColorButton) {
-		this.myColorButton = myColorButton;
+	public UserPreferences(Color myColorButton) {
+		this.color = myColorButton;
 	}
 
 	/**
-	 * @return the myColorButton
+	 * @return the color
 	 */
-	public String getMyColorButton() {
-		return myColorButton;
+	public Color getColor() {
+		return color;
 	}
 
 	/**
-	 * @param myColorButton the myColorButton to set
+	 * @param color the color to set
 	 */
-	public void setMyColorButton(String myColorButton) {
-		this.myColorButton = myColorButton;
+	public void setColor(Color color) {
+		this.color = color;
 	}
+
 	
 }

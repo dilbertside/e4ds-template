@@ -7,6 +7,8 @@ import java.util.Locale;
 import java.util.Set;
 
 import org.apache.commons.lang3.mutable.MutableInt;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.core.io.ClassPathResource;
@@ -27,6 +29,8 @@ import com.google.common.collect.Sets;
 @Service
 public class NavigationService {
 
+	private final static Logger logger = LoggerFactory.getLogger(NavigationService.class);
+	
 	@Autowired
 	private MessageSource messageSource;
 	@Autowired private UserPreferences userPreferences;
@@ -42,7 +46,7 @@ public class NavigationService {
 	@ExtDirectMethod(TREE_LOAD)
 	@PreAuthorize("isAuthenticated()")
 	public MenuNode getNavigation(Locale locale) {
-		System.out.println("my wonderful color: " + userPreferences.getMyColorButton());
+		logger.debug("my wonderful color: {}", userPreferences.getColor().getMyColorButton());
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
 		MenuNode copyOfRoot = new MenuNode(root, authentication.getAuthorities());
