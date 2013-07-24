@@ -76,6 +76,7 @@ public class WebAppInitializer implements WebApplicationInitializer {
 		dispatcher.setLoadOnStartup(1);
 		dispatcher.addMapping("/");
 		dispatcher.setAsyncSupported(true);
+		dispatcher.setInitParameter("threadContextInheritable", Boolean.TRUE.toString());
 
 		try {
 			processWebResources(container, rootContext.getEnvironment().acceptsProfiles("production"));
